@@ -7,7 +7,7 @@ This project was built **via the AWS Console** to focus on fundamentals: network
 ---
 
 ## Repository structure
-.
+```text
 ├── README.md
 ├── .gitignore
 └── docs
@@ -16,7 +16,7 @@ This project was built **via the AWS Console** to focus on fundamentals: network
     │   └── architecture-diagram-outline.png
     └── runbook
         └── cleanup.md
-
+```
 ## Architecture
 
 **Traffic flow (high level):**
