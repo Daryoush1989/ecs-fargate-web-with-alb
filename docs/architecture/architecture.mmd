@@ -1,0 +1,42 @@
+```mermaid
+flowchart TB
+  Internet((Internet))
+
+  subgraph Region[eu-west-2 (London)]
+    subgraph VPC[acme-dev-network-vpc\n10.10.0.0/16]
+      IGW[Internet Gateway\nacme-dev-network-igw]
+
+      subgraph AZA[eu-west-2a]
+        PubA[Public Subnet\n10.10.0.0/24\n...public-euw2a]
+        PrivA[Private Subnet\n10.10.10.0/24\n...private-euw2a]
+        NAT[NAT Gateway\nacme-dev-network-nat-euw2a]
+      end
+
+      subgraph AZB[eu-west-2b]
+        PubB[Public Subnet\n10.10.1.0/24\n...public-euw2b]
+        PrivB[Private Subnet\n10.10.11.0/24\n...private-euw2b]
+      end
+
+      ALB[Application Load Balancer\nacme-dev-ecs-alb-public\nListener: HTTP 80]
+      TG[Target Group (IP)\nacme-dev-ecs-tg-http\nHC: /]
+      ECS[ECS Service (Fargate)\nacme-dev-ecs-svc-web\n2 tasks across AZs]
+
+      CW[(CloudWatch Logs)]
+    end
+  end
+
+  Internet -->|HTTP:80| ALB
+  ALB --> TG
+  TG --> ECS
+
+  ECS -->|egress| NAT
+  NAT --> IGW
+  IGW --> Internet
+
+  ECS --> CW
+
+  %% Security group notes (as labels)
+  ALB:::sg
+  ECS:::sg
+
+  classDef sg stroke-dasharray: 5 5;
