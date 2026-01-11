@@ -5,10 +5,11 @@ A beginner-friendly, production-style AWS reference project that deploys a conta
 This project was built **via the AWS Console** to focus on fundamentals: networking, security groups, load balancing, and ECS service wiring.
 
 ---
+
 ## Repository structure
 
 ```text
-
+.
 ├── README.md
 ├── .gitignore
 └── docs
@@ -17,7 +18,7 @@ This project was built **via the AWS Console** to focus on fundamentals: network
     │   └── architecture-diagram-outline.png
     └── runbook
         └── cleanup.md
-
+        
 ## Architecture
 
 **Traffic flow (high level):**
