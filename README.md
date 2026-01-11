@@ -17,7 +17,7 @@ This project was built **via the AWS Console** to focus on fundamentals: network
     │   └── architecture-diagram-outline.png
     └── runbook
         └── cleanup.md
-
+.
 ## Architecture
 
 **Traffic flow (high level):**
