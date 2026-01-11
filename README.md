@@ -165,5 +165,4 @@ See: `docs/runbook/cleanup.md`
 
 ---
 
-## License
-MIT (or choose your preferred license)
+
