@@ -1,38 +1,46 @@
+# Full Cleanup Runbook
 
-```md
-# Full Cleanup Runbook (Delete Everything)
+Goal: remove the billable lab resources, including the ALB, NAT Gateway, ECS tasks, and VPC resources.
 
-Goal: remove all billable resources (ALB, NAT, ECS tasks) and then delete the VPC.
+## Order Matters
 
-## Order matters
+### 1. ECS Service
 
-### 1) ECS: delete service (stops tasks + releases ENIs)
-- ECS → Clusters → acme-dev-ecs-cluster → Services → acme-dev-ecs-svc-web → Delete
+- ECS -> Clusters -> `acme-dev-ecs-cluster` -> Services -> `acme-dev-ecs-svc-web` -> Delete
+- Wait for the service tasks to stop and for task ENIs to be released.
 
-### 2) Load Balancing
-- EC2 → Load Balancers → acme-dev-ecs-alb-public → Delete
-- EC2 → Target Groups → acme-dev-ecs-tg-http → Delete
+### 2. Load Balancing
 
-### 3) NAT + Elastic IP (major cost)
-- VPC → NAT gateways → acme-dev-network-nat-euw2a → Delete
-- VPC → Elastic IPs → Release the NAT EIP (after it disassociates)
+- EC2 -> Load Balancers -> `acme-dev-ecs-alb-public` -> Delete
+- EC2 -> Target Groups -> `acme-dev-ecs-tg-http` -> Delete
 
-### 4) Internet Gateway
-- VPC → Internet gateways → acme-dev-network-igw
-  - Detach from VPC
-  - Delete
+### 3. NAT Gateway and Elastic IP
 
-### 5) Subnets
-- VPC → Subnets → delete all 4 subnets
+- VPC -> NAT gateways -> `acme-dev-network-nat-euw2a` -> Delete
+- VPC -> Elastic IPs -> release the NAT Elastic IP after it disassociates
 
-### 6) Route tables (non-main)
-- VPC → Route tables → delete:
-  - acme-dev-network-rtb-public
-  - acme-dev-network-rtb-private-euw2a
-  - acme-dev-network-rtb-private-euw2b
+### 4. Internet Gateway
 
-### 7) VPC last
-- VPC → Your VPCs → acme-dev-network-vpc → Delete
+- VPC -> Internet gateways -> `acme-dev-network-igw`
+- Detach it from the VPC.
+- Delete it.
 
-## If you get “resource in use”
-Check VPC → Network Interfaces (ENIs). Usually a NAT/ALB/task ENI still exists because a parent resource is still deleting.
+### 5. Subnets
+
+- VPC -> Subnets -> delete all four lab subnets.
+
+### 6. Route Tables
+
+Delete the non-main route tables:
+
+- `acme-dev-network-rtb-public`
+- `acme-dev-network-rtb-private-euw2a`
+- `acme-dev-network-rtb-private-euw2b`
+
+### 7. VPC
+
+- VPC -> Your VPCs -> `acme-dev-network-vpc` -> Delete
+
+## If You Get "Resource In Use"
+
+Check VPC -> Network Interfaces. A NAT Gateway, ALB, or ECS task ENI may still exist because a parent resource is still deleting. Wait a few minutes and retry after the dependent resource is gone.
